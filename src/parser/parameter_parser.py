@@ -1,5 +1,6 @@
 from src.exceptions.missing_value_parser_exception import MissingValueParserException
 
+
 class ParameterParser:
 
     def __init__(self, allowed_options=None):
@@ -13,7 +14,7 @@ class ParameterParser:
         length = len(user_inputs)
         while idx < length:
             user_input = user_inputs[idx]
-            idx += 1 # Polyfill to user_inputs[idx++]
+            idx += 1  # Polyfill to user_inputs[idx++]
             if user_input in self.allowed_options:
                 # As the index has increased, we're getting the next value
                 # I.E.: "-o file.txt" -> ["-o", "file.txt"]
@@ -27,4 +28,3 @@ class ParameterParser:
                 idx = idx + 1
 
         return self.allowed_options
-
