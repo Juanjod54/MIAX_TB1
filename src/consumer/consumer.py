@@ -4,6 +4,7 @@ from requests import Response
 from abc import ABC, abstractmethod
 from src.domain.data_class import DataClass
 from src.domain.consumable import Consumable
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 class Consumer(ABC):
@@ -27,16 +28,28 @@ class Consumer(ABC):
             return requests.post(url, params=params)
         return None
 
+    def __consume__(self, consumable: Consumable, params, method):
+        url = self.__generate_api_url__(consumable)
+        response = Consumer.__do_request__(url, params, method)
+        return self.__process_raw_response__(consumable.symbol, response)
+
     def consume(self, consumables: list[Consumable], params=None, method: methods = methods.GET, async_request=False) -> \
             list[DataClass]:
         dataclasses = []
 
         if async_request:
-            raise Exception("Not implemented")
+
+            with ThreadPoolExecutor() as executor:
+                futures = {executor.submit(self.__consume__,  ##
+                                           consumable, params, method): consumable for consumable in consumables}
+                for future in as_completed(futures):
+                    consumable = futures[future]
+                    try:
+                        dataclasses.append(future.result())
+                    except Exception as e:
+                        print(f"There was an error while fetching consumable {consumable}: {e}")
         else:
             for consumable in consumables:
-                url = self.__generate_api_url__(consumable)
-                response = Consumer.__do_request__(url, params, method)
-                dataclasses.append(self.__process_raw_response__(consumable.symbol, response))
+                dataclasses.append(self.__consume__(consumable, params, method))
 
         return dataclasses

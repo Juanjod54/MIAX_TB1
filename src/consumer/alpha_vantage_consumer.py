@@ -25,9 +25,6 @@ class AlphaVantageConsumer(Consumer):
         self.api_key = api_key
 
     def __process_raw_response__(self, name: str, response: Response) -> DataClass:
-        if response is None:
-            pass
-
         response_obj = response.json()
         return DataClass(name)
 
