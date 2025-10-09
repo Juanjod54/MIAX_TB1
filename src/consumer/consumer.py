@@ -13,7 +13,7 @@ class Consumer(ABC):
         POST = 2
 
     @abstractmethod
-    def __process_raw_response__(self, name: str, response: Response) -> DataClass:
+    def __process_raw_response__(self, consumable: Consumable, response: Response) -> DataClass:
         pass
 
     @abstractmethod
@@ -31,7 +31,7 @@ class Consumer(ABC):
     def __consume__(self, consumable: Consumable, params, method):
         url = self.__generate_api_url__(consumable)
         response = Consumer.__do_request__(url, params, method)
-        return self.__process_raw_response__(consumable.symbol, response)
+        return self.__process_raw_response__(consumable, response)
 
     def consume(self, consumables: list[Consumable], params=None, method: methods = methods.GET, async_request=False) -> \
             list[DataClass]:

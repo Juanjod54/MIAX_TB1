@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Consumable:
-    class timedelta(Enum):
+    class time_delta(Enum):
         INTRADAY = 1
         DAILY = 2
         WEEKLY = 3
@@ -15,7 +15,12 @@ class Consumable:
         thirty_min = 4
         sixty_min = 5
 
-    def __init__(self, symbol: str, timedelta: timedelta, interval: interval):
+    class data_type(Enum):
+        CSV = "csv"
+        JSON = "json"
+
+    def __init__(self, symbol: str, time_delta: time_delta, interval: interval, data_type: data_type=data_type.JSON):
         self.symbol = symbol
-        self.timedelta = timedelta
         self.interval = interval
+        self.data_type = data_type
+        self.time_delta = time_delta
