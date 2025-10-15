@@ -1,10 +1,6 @@
+import pandas as pd
 from enum import Enum
-from importlib.metadata import metadata
-
-import pytz
 from requests import Response
-from datetime import datetime
-
 from src.domain.price import Price
 from src.util.util import Util
 from src.consumer.consumer import Consumer
@@ -63,7 +59,14 @@ class AlphaVantageConsumer(Consumer):
                 tz_dt = Util.from_str(date_key, self.DEFAULT_DATE_PATTERN, timezone=timezone)
                 utc_dt = Util.to_utc(tz_dt)
                 price_info = prices_info[date_key]
-                prices.append(Price(utc_dt, price_info[self.OPEN_KEY], price_info[self.CLOSE_KEY], price_info[self.HIGH_KEY], price_info[self.LOW_KEY], price_info[self.VOLUME_KEY]))
+                prices.append(
+                    Price(utc_dt,
+                          float(price_info[self.OPEN_KEY]),
+                          float(price_info[self.CLOSE_KEY]),
+                          float(price_info[self.HIGH_KEY]),
+                          float(price_info[self.LOW_KEY]),
+                          float(price_info[self.VOLUME_KEY]))
+                )
 
             dataclass.add_prices(prices)
 
@@ -88,15 +91,14 @@ class AlphaVantageConsumer(Consumer):
             for i in range(1, len(csv_rows)):
                 price_info = csv_rows[i].split(",")
                 dt = Util.from_str(price_info[headers_positions[self.TIMESTAMP_KEY]], self.DEFAULT_DATE_PATTERN)
-                open_value = price_info[headers_positions[self.OPEN_KEY]]
-                close_value = price_info[headers_positions[self.CLOSE_KEY]]
-                high_value = price_info[headers_positions[self.HIGH_KEY]]
-                low_value = price_info[headers_positions[self.LOW_KEY]]
-                volume_value = price_info[headers_positions[self.VOLUME_KEY]]
+                open_value = float(price_info[headers_positions[self.OPEN_KEY]])
+                close_value = float(price_info[headers_positions[self.CLOSE_KEY]])
+                high_value = float(price_info[headers_positions[self.HIGH_KEY]])
+                low_value = float(price_info[headers_positions[self.LOW_KEY]])
+                volume_value = float(price_info[headers_positions[self.VOLUME_KEY]])
                 prices.append(Price(dt, open_value, close_value, high_value, low_value, volume_value))
 
         return dataclass
-
 
     def __process_raw_response__(self, consumable: Consumable, response: Response) -> DataClass:
         if response.status_code != 200:
