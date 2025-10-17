@@ -54,15 +54,14 @@ class DataClass:
 
     # Adding prices in batches reduces the number of times the statistics properties need to be measured
     def add_prices(self, prices: list[Price]):
-        dates = []
-        prices_columns = { 'open': [], 'close': [], 'high': [], 'low': [], 'volume': [] }
+        prices_columns = { 'open': [], 'close': [], 'high': [], 'low': [], 'volume': [], 'date': [] }
         for price in prices:
-            dates.append(price.datetime)
             prices_columns['open'].append(price.open)
             prices_columns['close'].append(price.close)
             prices_columns['high'].append(price.high)
             prices_columns['low'].append(price.low)
             prices_columns['volume'].append(price.volume)
+            prices_columns['date'].append(price.datetime)
 
-        self.prices = pd.concat([self.prices, pd.DataFrame(prices_columns, index=dates)])
+        self.prices = pd.concat([self.prices, pd.DataFrame(prices_columns, index=prices_columns['date'])])
 
