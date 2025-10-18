@@ -38,7 +38,8 @@ class AlphaVantageConsumer(Consumer):
         thirty_min = "30min"
         sixty_min = "60min"
 
-    def __init__(self, api_key):
+    def __init__(self, api_key, params=None, method: Consumer.methods = Consumer.methods.GET):
+        super().__init__(params, method)
         self.api_key = api_key
 
     def __parse_json_response__(self, consumable: Consumable, response: Response) -> DataClass:
@@ -87,7 +88,7 @@ class AlphaVantageConsumer(Consumer):
                 headers_positions[header] = idx
 
             prices = []
-            for i in range(1, len(csv_rows)):
+            for i in range(1, len(csv_rows) - 1):
                 price_info = csv_rows[i].split(",")
                 dt = Util.from_str(price_info[headers_positions[self.TIMESTAMP_KEY]], self.DEFAULT_DATE_PATTERN)
                 open_value = float(price_info[headers_positions[self.OPEN_KEY]])
