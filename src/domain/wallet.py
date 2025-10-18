@@ -18,6 +18,9 @@ class Wallet:
         """
         self.data_classes.extend(data_classes)
 
+    def plots_report(self):
+        pass
+
     def report(self, output_filename: str):
         """
         Generate a wallet report, displaying the statistics for each queried symbol

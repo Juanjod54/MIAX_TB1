@@ -1,5 +1,6 @@
 import pandas as pd
 from enum import Enum
+import matplotlib.pyplot as plt
 from src.domain.price import Price
 
 
@@ -67,3 +68,21 @@ class DataClass:
 
         self.prices = pd.concat([self.prices, pd.DataFrame(prices_columns, index=prices_columns['date'])])
 
+    def plot(self, field: Field):
+        plt.figure(figsize=(10, 5))
+        if field == DataClass.Field.CLOSE:
+            plt.plot(self.__get_data__(DataClass.Field.DATE), self.__get_data__(DataClass.Field.CLOSE), label="Close",
+                     linestyle="--", marker="o")
+            # plt.plot(df["date"], df["close"], label="Close", linestyle="-", marker="x")
+            plt.title("Close Price Evolution")
+            plt.ylabel("Price")
+            plt.xlabel("Date")
+
+        plt.legend()
+        plt.show()
+
+    def plots_report(self):
+        plots = []
+        for field in DataClass.Field:
+            plots.append(self.plot(field))
+        return plots
