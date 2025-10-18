@@ -14,14 +14,25 @@ class Consumer(ABC):
 
     @abstractmethod
     def __process_raw_response__(self, consumable: Consumable, response: Response) -> DataClass:
+        """
+        Abstract method to process the raw response from an API call
+        :param consumable: The consumable to process
+        :param response: The raw response from the API call
+        :return: An object containing the result data in a normalized DataClass object
+        """
         pass
 
     @abstractmethod
     def __generate_api_url__(self, consumable: Consumable) -> str:
+        """
+        Abstract method to generate the 'to-call' API url from a consumable
+        :param consumable: The consumable to process
+        :return: The API url
+        """
         pass
 
     @staticmethod
-    def __do_request__(url: str, params: dict, method: methods) -> Response:
+    def __do_request__(url: str, params: dict, method: methods) -> Response|None:
         if method == Consumer.methods.GET:
             return requests.get(url, params=params)
         elif method == Consumer.methods.POST:
@@ -32,6 +43,9 @@ class Consumer(ABC):
         url = self.__generate_api_url__(consumable)
         response = Consumer.__do_request__(url, params, method)
         return self.__process_raw_response__(consumable, response)
+
+    def __str__(self):
+        return self.__class__.__name__
 
     def consume(self, consumables: list[Consumable], params=None, method: methods = methods.GET, async_request=False) -> \
             list[DataClass]:

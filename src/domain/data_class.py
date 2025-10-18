@@ -1,6 +1,5 @@
 import pandas as pd
 from enum import Enum
-
 from src.domain.price import Price
 
 
@@ -11,11 +10,12 @@ class DataClass:
         CLOSE = 2
         HIGH = 3
         LOW = 4
-        VOLUME = 5
+        VOLUME = 5,
+        DATE = 6
 
-    def __init__(self, name: str):
-        self.variance = 0
+    def __init__(self, source: str, name: str):
         self.name = name
+        self.source = source
         self.prices = pd.DataFrame()
 
     def __get_data__(self, field: Field):
@@ -29,6 +29,8 @@ class DataClass:
             return self.prices['low']
         elif field == DataClass.Field.VOLUME:
             return self.prices['volume']
+        elif field == DataClass.Field.DATE:
+            return self.prices['date']
 
         raise NotImplementedError(f"Field {field} not implemented")
 

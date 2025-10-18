@@ -1,4 +1,3 @@
-import pandas as pd
 from enum import Enum
 from requests import Response
 from src.domain.price import Price
@@ -44,7 +43,7 @@ class AlphaVantageConsumer(Consumer):
 
     def __parse_json_response__(self, consumable: Consumable, response: Response) -> DataClass:
         # Create the return object
-        dataclass = DataClass(consumable.symbol)
+        dataclass = DataClass(self.__str__(), consumable.symbol)
         json_response = Util.transform_keys(response.json(), AlphaVantageConsumer.DEFAULT_KEY_REGEX)
         if json_response:
 
@@ -73,7 +72,7 @@ class AlphaVantageConsumer(Consumer):
         return dataclass
 
     def __parse_csv_response__(self, consumable: Consumable, response: Response) -> DataClass:
-        dataclass = DataClass(consumable.symbol)
+        dataclass = DataClass(self.__str__(), consumable.symbol)
         csv_response = response.content.decode("utf-8")
 
         # The CSV Output DOES NOT have the timezone metadata. We could get it by function = SYMBOL_SEARCH
