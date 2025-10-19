@@ -112,9 +112,12 @@ class Consumer(ABC):
                     try:
                         dataclasses.append(future.result())
                     except Exception as e:
-                        print(f"There was an error while fetching consumable {consumable}: {e}")
+                        print(f"{self} - There was an error while fetching consumable {consumable}: {e}")
         else:
             for consumable in consumables:
-                dataclasses.append(self.__consume__(consumable, self.params, self.method))
+                try:
+                    dataclasses.append(self.__consume__(consumable, self.params, self.method))
+                except Exception as e:
+                    print(f"{self} - There was an error while fetching consumable {consumable.symbol}: {e}")
 
         return dataclasses

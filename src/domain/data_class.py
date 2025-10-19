@@ -13,9 +13,9 @@ class DataClass:
         LOW = 4
         VOLUME = 5
 
-    def __init__(self, name: str):
-        self.variance = 0
+    def __init__(self, name: str, source: str):
         self.name = name
+        self.source = source
         self.prices = pd.DataFrame()
 
     def __get_data__(self, field: Field):

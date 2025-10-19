@@ -1,6 +1,7 @@
 from enum import Enum
 from requests import Response
 from src.domain.price import Price
+from src.exceptions.option_not_available_exception import OptionNotAvailableException
 from src.util.util import Util
 from src.consumer.consumer import Consumer
 from src.domain.data_class import DataClass
@@ -23,13 +24,12 @@ class AlphaVantageConsumer(Consumer):
     # Date patterns
     DEFAULT_DATE_PATTERN = '%Y-%m-%d %H:%M:%S'
     # API URL
-    API_URL = "https://www.alphavantage.co/query?function={time_delta}&symbol={symbol}&interval={interval}&datatype={data_type}&apikey={key}"
+    API_URL = "https://www.alphavantage.co/query?function={period}&symbol={symbol}&interval={interval}&datatype={data_type}&apikey={key}"
 
-    class __time_delta__(Enum):
+    class __period__(Enum):
         INTRADAY = "TIME_SERIES_INTRADAY"
-        DAILY = "TIME_SERIES_DAILY"
-        WEEKLY = "TIME_SERIES_WEEKLY"
-        MONTHLY = "TIME_SERIES_MONTHLY"
+        ONE_WEEK = "TIME_SERIES_WEEKLY"
+        ONE_MONTH = "TIME_SERIES_MONTHLY"
 
     class __interval__(Enum):
         one_min = "1min"
@@ -44,7 +44,7 @@ class AlphaVantageConsumer(Consumer):
 
     def __parse_json_response__(self, consumable: Consumable, response: Response) -> DataClass:
         # Create the return object
-        dataclass = DataClass(consumable.symbol)
+        dataclass = DataClass(consumable.symbol, self.__str__())
         json_response = Util.transform_keys(response.json(), AlphaVantageConsumer.DEFAULT_KEY_REGEX)
         if json_response:
 
@@ -73,7 +73,7 @@ class AlphaVantageConsumer(Consumer):
         return dataclass
 
     def __parse_csv_response__(self, consumable: Consumable, response: Response) -> DataClass:
-        dataclass = DataClass(consumable.symbol)
+        dataclass = DataClass(consumable.symbol, self.__str__())
         csv_response = response.content.decode("utf-8")
 
         # The CSV Output DOES NOT have the timezone metadata. We could get it by function = SYMBOL_SEARCH
@@ -114,7 +114,12 @@ class AlphaVantageConsumer(Consumer):
         raise IncompatibleDataTypeException(data_type.value)
 
     def __generate_api_url__(self, consumable: Consumable) -> str:
-        time_delta = AlphaVantageConsumer.__time_delta__[consumable.time_delta.name]
+        if consumable.interval.name not in AlphaVantageConsumer.__interval__.__members__:
+            raise OptionNotAvailableException(consumable.interval.name)
+        if consumable.period.name not in AlphaVantageConsumer.__period__.__members__:
+            raise OptionNotAvailableException(consumable.interval.name)
+
+        period = AlphaVantageConsumer.__period__[consumable.period.name]
         interval = AlphaVantageConsumer.__interval__[consumable.interval.name]
         data_type = consumable.data_type
 
@@ -122,7 +127,7 @@ class AlphaVantageConsumer(Consumer):
             raise IncompatibleDataTypeException(data_type.value)
 
         return self.API_URL.format(symbol=consumable.symbol,
-                                   time_delta=time_delta.value,  ##
+                                   period=period.value,  ##
                                    interval=interval.value,  ##
                                    data_type=data_type.value,  ##
                                    key=self.api_key)
