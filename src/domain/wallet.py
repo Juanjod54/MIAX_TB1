@@ -1,7 +1,8 @@
 from datetime import date
-from src.domain.data_class import DataClass
 from jinja2 import Template
 from importlib import resources
+from src.domain.data_class import DataClass
+
 
 class Wallet:
 
@@ -18,8 +19,12 @@ class Wallet:
         """
         self.data_classes.extend(data_classes)
 
-    def plots_report(self):
-        pass
+    def __plots_report__(self):
+        plots = {}
+        for data_class in self.data_classes:
+            plots[data_class] = data_class.plots_report()
+
+        return plots
 
     def report(self, output_filename: str):
         """
@@ -27,11 +32,13 @@ class Wallet:
         :param output_filename: Output file's name
         :return: This method does not return anything
         """
+        plots = self.__plots_report__()
         template_content = ""
         with resources.files("src.resources").joinpath(Wallet.TEMPLATE_FILENAME).open("r", encoding="utf-8") as f:
             template_content = f.read()
 
         rendered_content = Template(template_content).render(
+            plots=plots,
             DataClass=DataClass,
             date=date.today().isoformat(),
             data_classes=self.data_classes

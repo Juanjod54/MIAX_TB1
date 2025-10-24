@@ -21,6 +21,9 @@ _{{ date }}_
 
 ---
 
+Volatilidad
+Incertidumbre
+
 ### About
 
 - **First date:** {{ data_class.min(DataClass.Field.DATE) }}
@@ -29,10 +32,10 @@ _{{ date }}_
 
 ---
 
-### 📉 Visualización (opcional)
-
-![Gráfico de ](chart.png)
-
+### Plots
+{% for field in plots[data_class].keys() %}
+![{{ field.__name__ }}](data:image/png;base64,{{ plots[data_class][field].base64_str }})
+{% endfor %}
 ---
 
 {% endfor %}
