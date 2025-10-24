@@ -1,0 +1,41 @@
+# Wallet Report
+_{{ date }}_
+
+---
+
+{% for data_class in data_classes %}
+## Symbol: **{{ data_class.name }}**
+
+**Data source:** {{ data_class.source }}
+
+---
+
+### General Info
+
+|  Measure | Open Price | Close Price | High | Low | Volume |
+|----------|-----------------|----------------|----------|----------|----------|
+| **Mean** | {{ "%.2f"|format(data_class.mean(DataClass.Field.OPEN)) }} | {{ "%.2f"|format(data_class.mean(DataClass.Field.CLOSE)) }} | {{ "%.2f"|format(data_class.mean(DataClass.Field.HIGH)) }} | {{ "%.2f"|format(data_class.mean(DataClass.Field.LOW)) }} | {{ "%.2f"|format(data_class.mean(DataClass.Field.VOLUME)) }} |
+| **Std. Dev.** | {{ "%.2f"|format(data_class.std(DataClass.Field.OPEN)) }} | {{ "%.2f"|format(data_class.std(DataClass.Field.CLOSE)) }} | {{ "%.2f"|format(data_class.std(DataClass.Field.HIGH)) }} | {{ "%.2f"|format(data_class.std(DataClass.Field.LOW)) }} | {{ "%.2f"|format(data_class.std(DataClass.Field.VOLUME)) }} |
+| **Min** | {{ "%.2f"|format(data_class.min(DataClass.Field.OPEN)) }} | {{ "%.2f"|format(data_class.min(DataClass.Field.CLOSE)) }} | {{ "%.2f"|format(data_class.min(DataClass.Field.HIGH)) }} | {{ "%.2f"|format(data_class.min(DataClass.Field.LOW)) }} | {{ "%.2f"|format(data_class.min(DataClass.Field.VOLUME)) }} |
+| **Max** | {{ "%.2f"|format(data_class.max(DataClass.Field.OPEN)) }} | {{ "%.2f"|format(data_class.max(DataClass.Field.CLOSE)) }} | {{ "%.2f"|format(data_class.max(DataClass.Field.HIGH)) }} | {{ "%.2f"|format(data_class.max(DataClass.Field.LOW)) }} | {{ "%.2f"|format(data_class.max(DataClass.Field.VOLUME)) }} |
+
+---
+
+Volatilidad
+Incertidumbre
+
+### About
+
+- **First date:** {{ data_class.min(DataClass.Field.DATE) }}
+- **Last date:** {{ data_class.max(DataClass.Field.DATE) }}
+- **Number of processed data:** {{ data_class.prices | length }}
+
+---
+
+### Plots
+{% for field in plots[data_class].keys() %}
+![{{ field.__name__ }}](data:image/png;base64,{{ plots[data_class][field].base64_str }})
+{% endfor %}
+---
+
+{% endfor %}

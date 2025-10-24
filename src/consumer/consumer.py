@@ -8,7 +8,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 class Consumer(ABC):
-
     class methods(Enum):
         GET = 1
         POST = 2
