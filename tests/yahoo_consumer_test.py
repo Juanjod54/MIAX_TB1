@@ -7,5 +7,5 @@ from src.domain.consumable import Consumable
 consumer = YahooConsumer()
 ################################################################################################################
 # Test API consumer with demo API URL
-consumable_1 = Consumable("IBM", Consumable.period.INTRADAY, Consumable.interval.five_min)
+consumable_1 = Consumable("IBM", Consumable.period.INTRADAY, Consumable.interval.FIVE_MIN)
 result_1 = consumer.consume([consumable_1])
