@@ -4,25 +4,52 @@ from enum import Enum
 class Consumable:
     class period(Enum):
         INTRADAY = 1
-        TWO_DAYS = 2
-        ONE_WEEK = 3
-        ONE_MONTH = 4
-        THREE_MONTHS = 5
-        SIX_MONTHS = 6
-        ONE_YEAR = 7
+        DAILY = 2
+        TWO_DAYS = 3
+        ONE_WEEK = 4
+        ONE_MONTH = 5
+        THREE_MONTHS = 6
+        SIX_MONTHS = 7
+        ONE_YEAR = 8
 
     class interval(Enum):
-        one_min = 1
-        five_min = 2
-        fifteen_min = 3
-        thirty_min = 4
-        sixty_min = 5
-        ninety_min = 6
-        one_day = 7
-        five_days = 8
-        one_week = 9
-        one_month = 10
-        three_months = 11
+        ONE_MIN = 1
+        FIVE_MIN = 2
+        FIFTEEN_MIN = 3
+        THIRTY_MIN = 4
+        SIXTY_MIN = 5
+        NINETY_MIN = 6
+        ONE_DAY = 7
+        FIVE_DAYS = 8
+        ONE_WEEK = 9
+        ONE_MONTH = 10
+        THREE_MONTHS = 11
+
+        def resample_value(self) -> str:
+            if self == Consumable.interval.ONE_MIN:
+                return '1min'
+            elif self == Consumable.interval.FIVE_MIN:
+                return '5min'
+            elif self == Consumable.interval.FIFTEEN_MIN:
+                return '15min'
+            elif self == Consumable.interval.THIRTY_MIN:
+                return '30min'
+            elif self == Consumable.interval.SIXTY_MIN:
+                return '60min'
+            elif self == Consumable.interval.NINETY_MIN:
+                return '90min'
+            elif self == Consumable.interval.ONE_DAY:
+                return '1D'
+            elif self == Consumable.interval.FIVE_DAYS:
+                return '5D'
+            elif self == Consumable.interval.ONE_WEEK:
+                return '1W'
+            elif self == Consumable.interval.ONE_MONTH:
+                return '1M'
+            elif self == Consumable.interval.THREE_MONTHS:
+                return '3M'
+
+            return self.value.__str__()
 
     class data_type(Enum):
         CSV = "csv"

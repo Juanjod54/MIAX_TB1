@@ -16,6 +16,10 @@ class Util:
         return dt
 
     @staticmethod
+    def datetime_to_MM_DD_YYYY_format(date: datetime) -> str:
+        return date.strftime("%m-%d-%Y")
+
+    @staticmethod
     def transform_keys(data: dict, regex: str) -> dict:
         new_data = {}
         if data:

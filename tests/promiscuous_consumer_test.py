@@ -9,7 +9,7 @@ from src.domain.consumable import Consumable
 consumer_1 = AlphaVantageConsumer("TTFIK3GA2M9UCDXS")
 consumer_2 = YahooConsumer()
 ################################################################################################################
-consumable_1 = Consumable("IBM", Consumable.period.INTRADAY, Consumable.interval.five_min)
-consumable_2 = Consumable("AAPL", Consumable.period.INTRADAY, Consumable.interval.five_min)
+consumable_1 = Consumable("IBM", Consumable.period.INTRADAY, Consumable.interval.FIVE_MIN)
+consumable_2 = Consumable("AAPL", Consumable.period.INTRADAY, Consumable.interval.FIVE_MIN)
 results = Consumer.promiscuous_consume([consumer_1, consumer_2], [consumable_1, consumable_1])
 print(results)

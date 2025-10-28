@@ -19,6 +19,7 @@ class AlphaVantageConsumer(Consumer):
     TIMESTAMP_KEY = 'timestamp'
     META_DATA_KEY = 'Meta Data'
     TIME_ZONE_KEY = 'Time Zone'
+    CLOSE_KEY_ADJUSTED = 'close'
     # Keys regex
     DEFAULT_KEY_REGEX = "\\d+\\.\\ (.+)"
     # Date patterns
@@ -28,15 +29,16 @@ class AlphaVantageConsumer(Consumer):
 
     class __period__(Enum):
         INTRADAY = "TIME_SERIES_INTRADAY"
-        ONE_WEEK = "TIME_SERIES_WEEKLY"
-        ONE_MONTH = "TIME_SERIES_MONTHLY"
+        DAILY = "TIME_SERIES_DAILY_ADJUSTED"
+        ONE_WEEK = "TIME_SERIES_WEEKLY_ADJUSTED"
+        ONE_MONTH = "TIME_SERIES_MONTHLY_ADJUSTED"
 
     class __interval__(Enum):
-        one_min = "1min"
-        five_min = "5min"
-        fifteen_min = "15min"
-        thirty_min = "30min"
-        sixty_min = "60min"
+        ONE_MIN = "1min"
+        FIVE_MIN = "5min"
+        FIFTEEN_MIN = "15min"
+        THIRTY_MIN = "30min"
+        SIXTY_MIN = "60min"
 
     def __init__(self, api_key, params=None, method: Consumer.methods = Consumer.methods.GET):
         super().__init__(params, method)
@@ -44,7 +46,7 @@ class AlphaVantageConsumer(Consumer):
 
     def __parse_json_response__(self, consumable: Consumable, response: Response) -> DataClass:
         # Create the return object
-        dataclass = DataClass(consumable.symbol, self.__str__())
+        dataclass = DataClass(consumable, self.__str__())
         json_response = Util.transform_keys(response.json(), AlphaVantageConsumer.DEFAULT_KEY_REGEX)
         if json_response:
 
@@ -63,6 +65,7 @@ class AlphaVantageConsumer(Consumer):
                     Price(utc_dt,
                           float(price_info[self.OPEN_KEY]),
                           float(price_info[self.CLOSE_KEY]),
+                          float(price_info[self.CLOSE_KEY_ADJUSTED]),
                           float(price_info[self.HIGH_KEY]),
                           float(price_info[self.LOW_KEY]),
                           float(price_info[self.VOLUME_KEY]))
@@ -73,7 +76,7 @@ class AlphaVantageConsumer(Consumer):
         return dataclass
 
     def __parse_csv_response__(self, consumable: Consumable, response: Response) -> DataClass:
-        dataclass = DataClass(consumable.symbol, self.__str__())
+        dataclass = DataClass(consumable, self.__str__())
         csv_response = response.content.decode("utf-8")
 
         # The CSV Output DOES NOT have the timezone metadata. We could get it by function = SYMBOL_SEARCH
@@ -93,10 +96,11 @@ class AlphaVantageConsumer(Consumer):
                 dt = Util.from_str(price_info[headers_positions[self.TIMESTAMP_KEY]], self.DEFAULT_DATE_PATTERN)
                 open_value = float(price_info[headers_positions[self.OPEN_KEY]])
                 close_value = float(price_info[headers_positions[self.CLOSE_KEY]])
+                close_value_adj = float(price_info[headers_positions[self.CLOSE_KEY_ADJUSTED]])
                 high_value = float(price_info[headers_positions[self.HIGH_KEY]])
                 low_value = float(price_info[headers_positions[self.LOW_KEY]])
                 volume_value = float(price_info[headers_positions[self.VOLUME_KEY]])
-                prices.append(Price(dt, open_value, close_value, high_value, low_value, volume_value))
+                prices.append(Price(dt, open_value, close_value, close_value_adj, high_value, low_value, volume_value))
 
         return dataclass
 

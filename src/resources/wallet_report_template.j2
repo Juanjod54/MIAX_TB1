@@ -2,11 +2,19 @@
 _{{ date }}_
 
 ---
+## Wallet's performance
+![Wallet's Performance](data:image/png;base64,{{ wallet_performance_plot.base64_str }})
+
 
 {% for data_class in data_classes %}
 ## Symbol: **{{ data_class.name }}**
 
 **Data source:** {{ data_class.source }}
+
+- **Volatility:** {{ data_class.volatility() }}
+- **First date:** {{ data_class.min(DataClass.Field.DATE) }}
+- **Last date:** {{ data_class.max(DataClass.Field.DATE) }}
+- **Number of processed data:** {{ data_class.prices | length }}
 
 ---
 
@@ -21,14 +29,8 @@ _{{ date }}_
 
 ---
 
-Volatilidad
+
 Incertidumbre
-
-### About
-
-- **First date:** {{ data_class.min(DataClass.Field.DATE) }}
-- **Last date:** {{ data_class.max(DataClass.Field.DATE) }}
-- **Number of processed data:** {{ data_class.prices | length }}
 
 ---
 

@@ -12,6 +12,7 @@ from src.util.util import Util
 class YahooConsumer(Consumer):
     class __period__(Enum):
         INTRADAY = "1d"
+        DAILY_ADJUSTED = "1d"
         TWO_DAYS = "2d"
         ONE_WEEK = "1wk"
         ONE_MONTH = "1mo"
@@ -20,18 +21,18 @@ class YahooConsumer(Consumer):
         ONE_YEAR = "1y"
 
     class __interval__(Enum):
-        one_min = "1m"
-        two_min = "2m"
-        five_min = "5m"
-        fifteen_min = "15m"
-        thirty_min = "30m"
-        sixty_min = "60m"
-        ninety_min = "90m"
-        one_day = "1d"
-        five_days = "5d"
-        one_week = "1wk"
-        one_month = "1mo"
-        three_months = "3mo"
+        ONE_MIN = "1m"
+        TWO_MIN = "2m"
+        FIVE_MIN = "5m"
+        FIFTEEN_MIN = "15m"
+        THIRTY_MIN = "30m"
+        SIXTY_MIN = "60m"
+        NINETY_MIN = "90m"
+        ONE_DAY = "1d"
+        FIVE_DAYS = "5d"
+        ONE_WEEK = "1wk"
+        ONE_MONTH = "1mo"
+        THREE_MONTHS = "3mo"
 
     def __init__(self):
         super().__init__()
@@ -65,7 +66,7 @@ class YahooConsumer(Consumer):
         :return: The processed response from the API call, as a DataClass object
         """
 
-        data_class = DataClass(consumable.symbol, self.__str__())
+        data_class = DataClass(consumable, self.__str__())
 
         if consumable.interval.name not in YahooConsumer.__interval__.__members__:
             raise OptionNotAvailableException(consumable.interval.name)
@@ -77,14 +78,16 @@ class YahooConsumer(Consumer):
         interval = YahooConsumer.__interval__[consumable.interval.name]
 
         prices = []
-        data = yf.download(ticker, period=period.value, interval=interval.value, progress=False)
+        data = yf.download(ticker, period=period.value, interval=interval.value, progress=False, auto_adjust=False)
         # Normalize column names
-        data.columns = [col[0].lower() for col in data.columns.to_flat_index()]
+        data.columns = [col[0].lower().replace(' ', '_') for col in data.columns.to_flat_index()]
+        # May seem redundant, but standardizes data:
         for row in data.itertuples(name='Price'):
+            close_adj = row.adj_close if 'adj_close' in data.columns else row.close
             utc_dt = Util.to_utc(row.Index.to_pydatetime())
-            prices.append(Price(utc_dt, row.open, row.close, row.high, row.low, row.volume))
+            prices.append(Price(utc_dt, row.open, row.close, close_adj, row.high, row.low, row.volume))
 
         data_class.add_prices(prices)
         return data_class
 
-        # May seem redundant, but standardizes data:
+
