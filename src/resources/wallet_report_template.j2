@@ -11,7 +11,7 @@ _{{ date }}_
 
 **Data source:** {{ data_class.source }}
 
-- **Volatility:** {{ data_class.volatility() }}
+- **Volatility:** {{ "%.2f"|format(data_class.volatility()) }} %
 - **First date:** {{ data_class.min(DataClass.Field.DATE) }}
 - **Last date:** {{ data_class.max(DataClass.Field.DATE) }}
 - **Number of processed data:** {{ data_class.prices | length }}
