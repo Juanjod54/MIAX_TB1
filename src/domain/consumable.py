@@ -1,3 +1,4 @@
+import datetime
 from enum import Enum
 
 
@@ -51,6 +52,15 @@ class Consumable:
 
             return self.value.__str__()
 
+        def timedelta(self, n):
+            if self.value < Consumable.interval.ONE_DAY.value:
+                return datetime.timedelta(minutes=n)
+            elif self.value < Consumable.interval.ONE_WEEK.value:
+                return datetime.timedelta(days=n)
+            elif self.value < Consumable.interval.ONE_MONTH.value:
+                return datetime.timedelta(weeks=n)
+            else:
+                return datetime.timedelta(days=n*30)
     class data_type(Enum):
         CSV = "csv"
         JSON = "json"

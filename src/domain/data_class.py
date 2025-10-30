@@ -1,14 +1,18 @@
 import io
 import copy
+import math
 import base64
+import random
+import datetime
 
+import numpy as np
 import pandas as pd
 from enum import Enum
+from pandas import DataFrame
 import matplotlib.pyplot as plt
-
-from src.domain.consumable import Consumable
 from src.domain.plot import Plot
 from src.domain.price import Price
+from src.domain.consumable import Consumable
 
 
 class DataClass:
@@ -48,7 +52,7 @@ class DataClass:
         elif field == DataClass.Field.VOLUME:
             return self.prices['volume']
         elif field == DataClass.Field.DATE:
-            return self.prices['date']
+            return self.prices.index
         elif field == DataClass.Field.PERFORMANCE:
             return self.prices['performance']
         elif field == DataClass.Field.RETURNS:
@@ -76,24 +80,57 @@ class DataClass:
         data = self.__get_data__(DataClass.Field.RETURNS)
         return data.std()
 
-    def monte_carlo(self, field: Field):
-        np_array = self.__get_data__(field)
+    def monte_carlo(self, steps: int, n_simulations: int, show: bool = False) -> DataFrame:
+        returns = self.__get_data__(DataClass.Field.RETURNS)
+        mu = returns.mean()/100
+        sigma = returns.std()/100
+        s0 = self.__get_data__(DataClass.Field.CLOSE).iloc[-1]
+        last_date = self.__get_data__(DataClass.Field.DATE).max().to_pydatetime()
+
+        dt = 1  # Dt is always one since we are gonna use the data class interval to simulate "steps" steps
+        df = pd.DataFrame(0,  #
+                          columns=[f"Sim_{i + 1}" for i in range(n_simulations)],  #
+                          index=[(last_date + self.interval.timedelta(s)) for s in range(steps)])
+
+        for i in range(n_simulations):
+            _s0 = s0
+            prices = []
+            randoms = np.random.uniform(-1, 1, size=steps)
+            for s in range(steps):
+                z = randoms[s]
+                _s0 = _s0 * math.e ** ((mu - 0.5 * sigma ** 2) * dt + sigma * math.sqrt(dt) * z)
+                prices.append(_s0)
+            df[f"Sim_{i + 1}"] = prices
+
+        if show:
+            series = []
+            for i in range(n_simulations):
+                simulation_label = f"Sim_{i + 1}"
+                series.append({  #
+                    'x': df.index,  #
+                    'y': df[simulation_label],  #
+                    'linestyle': '--'  #
+                })
+            DataClass.__plot_field__('Monte Carlo Simulation', series, ylabel='Price', show=True)
+
+        return df
 
     # Adding prices in batches reduces the number of times the statistics properties need to be measured
     def add_prices(self, prices: list[Price]):
-        prices_columns = {'open': [], 'close': [], 'close_adj': [], 'high': [], 'low': [], 'volume': [], 'date': [],
+        dates = []
+        prices_columns = {'open': [], 'close': [], 'close_adj': [], 'high': [], 'low': [], 'volume': [],
                           'performance': []}
         for price in prices:
+            dates.append(price.datetime)
             prices_columns['low'].append(price.low)
             prices_columns['open'].append(price.open)
             prices_columns['high'].append(price.high)
             prices_columns['close'].append(price.close)
             prices_columns['volume'].append(price.volume)
-            prices_columns['date'].append(price.datetime)
             prices_columns['close_adj'].append(price.close_adj)
             prices_columns['performance'].append(price.performance)
 
-        prices_df = pd.DataFrame(prices_columns, index=prices_columns['date'])
+        prices_df = pd.DataFrame(prices_columns, index=dates)
         self.prices = pd.concat([self.prices, prices_df])
         # Get the returns
         self.prices['returns'] = self.prices['close_adj'].pct_change().apply(lambda r: r * 100)
@@ -124,18 +161,45 @@ class DataClass:
 
     def resample(self, to_interval: Consumable.interval) -> 'DataClass':
         new_data_class = copy.copy(self)
-        new_data_class.prices = new_data_class.prices.resample(to_interval.resample_value()).ffill()
+        if to_interval <= self.interval:
+            new_data_class.prices = new_data_class.prices.resample(to_interval.resample_value()).ffill()
+        else:
+            new_data_class.prices = new_data_class.prices.resample(to_interval.resample_value()).agg({
+                'open': 'first',
+                'high': 'max',
+                'low': 'min',
+                'close': 'last',
+                'volume': 'sum'
+            })
         new_data_class.__clean_prices__()
         return new_data_class
 
     @staticmethod
-    def plot_field(title: str, data_classes: list['DataClass'], fields: list[Field], ylabel: str,
-                   linestyle: str = None, show: bool = False) -> Plot:
+    def plot_field(title: str, data_classes: list['DataClass'], fields: list[Field], ylabel: str, linestyle: str = None,
+                   show: bool = False):
+        series = []
         for data_class in data_classes:
             for field in fields:
                 label = f"{data_class.name}: {field.name} ({field.unit()})"
-                plt.plot(data_class.__get_data__(DataClass.Field.DATE), data_class.__get_data__(field),
-                         linestyle=linestyle, marker='o', label=label)
+                series.append({  #
+                    'x': data_class.__get_data__(DataClass.Field.DATE),  #
+                    'y': data_class.__get_data__(field),  #
+                    'linestyle': linestyle,  #
+                    'label': label  #
+                })
+
+        return DataClass.__plot_field__(title, series, ylabel, show=show)
+
+    @staticmethod
+    def __plot_field__(title: str, series: list[any], ylabel: str, show: bool = False) -> Plot:
+
+        for serie in series:
+            x = serie['x']
+            y = serie['y']
+            linestyle = serie['linestyle']
+            label = serie['label'] if 'label' in serie else None
+            marker = serie['marker'] if 'marker' in serie else None
+            plt.plot(x, y, linestyle=linestyle, marker=marker, label=label)
 
         plt.xticks(rotation=45)
         plt.xlabel("Date")
