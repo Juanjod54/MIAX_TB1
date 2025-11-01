@@ -61,6 +61,7 @@ class Consumable:
                 return datetime.timedelta(weeks=n)
             else:
                 return datetime.timedelta(days=n*30)
+
     class data_type(Enum):
         CSV = "csv"
         JSON = "json"

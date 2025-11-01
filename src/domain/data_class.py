@@ -36,6 +36,7 @@ class DataClass:
     def __init__(self, consumable: Consumable, source: str):
         self.source = source
         self.prices = pd.DataFrame()
+        self.consumable = consumable
         self.name = consumable.symbol
         self.period = consumable.period
         self.interval = consumable.interval
@@ -80,10 +81,10 @@ class DataClass:
         data = self.__get_data__(DataClass.Field.RETURNS)
         return data.std()
 
-    def monte_carlo(self, steps: int, n_simulations: int, show: bool = False) -> DataFrame:
+    def monte_carlo(self, steps: int, n_simulations: int, show: bool = False) -> Plot:
         returns = self.__get_data__(DataClass.Field.RETURNS)
-        mu = returns.mean()/100
-        sigma = returns.std()/100
+        mu = returns.mean() / 100
+        sigma = returns.std() / 100
         s0 = self.__get_data__(DataClass.Field.CLOSE).iloc[-1]
         last_date = self.__get_data__(DataClass.Field.DATE).max().to_pydatetime()
 
@@ -102,18 +103,16 @@ class DataClass:
                 prices.append(_s0)
             df[f"Sim_{i + 1}"] = prices
 
-        if show:
-            series = []
-            for i in range(n_simulations):
-                simulation_label = f"Sim_{i + 1}"
-                series.append({  #
-                    'x': df.index,  #
-                    'y': df[simulation_label],  #
-                    'linestyle': '--'  #
-                })
-            DataClass.__plot_field__('Monte Carlo Simulation', series, ylabel='Price', show=True)
-
-        return df
+        series = []
+        for i in range(n_simulations):
+            simulation_label = f"Sim_{i + 1}"
+            series.append({  #
+                'x': df.index,  #
+                'y': df[simulation_label],  #
+                'linestyle': '--'  #
+            })
+        title = f'Monte Carlo ({self.name}, {steps} steps, {n_simulations} simulations of {self.interval.resample_value()})'
+        return DataClass.__plot_field__(title, series, ylabel='Price', show=show)
 
     # Adding prices in batches reduces the number of times the statistics properties need to be measured
     def add_prices(self, prices: list[Price]):
@@ -161,7 +160,7 @@ class DataClass:
 
     def resample(self, to_interval: Consumable.interval) -> 'DataClass':
         new_data_class = copy.copy(self)
-        if to_interval <= self.interval:
+        if to_interval.value <= self.interval.value:
             new_data_class.prices = new_data_class.prices.resample(to_interval.resample_value()).ffill()
         else:
             new_data_class.prices = new_data_class.prices.resample(to_interval.resample_value()).agg({
@@ -192,13 +191,19 @@ class DataClass:
 
     @staticmethod
     def __plot_field__(title: str, series: list[any], ylabel: str, show: bool = False) -> Plot:
-
+        labels = False
         for serie in series:
             x = serie['x']
             y = serie['y']
             linestyle = serie['linestyle']
-            label = serie['label'] if 'label' in serie else None
             marker = serie['marker'] if 'marker' in serie else None
+
+            if 'label' in serie:
+                labels = True
+                label = serie['label']
+            else:
+                label = None
+
             plt.plot(x, y, linestyle=linestyle, marker=marker, label=label)
 
         plt.xticks(rotation=45)
@@ -206,7 +211,10 @@ class DataClass:
         plt.ylabel(ylabel)
         plt.title(title)
         plt.grid(True)
-        plt.legend()
+        # Show labels only if there are
+        if labels:
+            plt.legend()
+
         plt.tight_layout()
 
         if show:

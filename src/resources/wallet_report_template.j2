@@ -11,7 +11,7 @@ _{{ date }}_
 
 **Data source:** {{ data_class.source }}
 
-- **Volatility:** {{ "%.2f"|format(data_class.volatility()) }} %
+- **Volatility:** {{ "%.2f"|format(data_class.volatility()) }} % ({% if data_class.volatility() < 5 %} 🟢 Worth the try {% else %} 🔴 Careful, High!  {% endif %})
 - **First date:** {{ data_class.min(DataClass.Field.DATE) }}
 - **Last date:** {{ data_class.max(DataClass.Field.DATE) }}
 - **Number of processed data:** {{ data_class.prices | length }}
@@ -29,6 +29,8 @@ _{{ date }}_
 
 ---
 
+### Monte Carlo Simulation
+![Monte Carlo](data:image/png;base64,{{ monte_carlo_plots[data_class].base64_str }})
 
 Incertidumbre
 

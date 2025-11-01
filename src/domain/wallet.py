@@ -1,7 +1,10 @@
 from datetime import date
 from jinja2 import Template
 from importlib import resources
+
+from src.domain.consumable import Consumable
 from src.domain.data_class import DataClass
+from src.domain.plot import Plot
 
 
 class Wallet:
@@ -37,7 +40,19 @@ class Wallet:
 
         return plots
 
-    def report(self, output_filename: str):
+    def monte_carlo(self, steps: int, n_simulations: int, consumable: Consumable=None, show: bool = False):
+        plots = {}
+        if consumable is None:
+            for data_class in self.data_classes:
+                plots[data_class] = data_class.monte_carlo(steps, n_simulations, show)
+        else:
+            data_class = next((dc for dc in self.data_classes if dc.consumable == consumable), None)
+            if data_class is not None:
+                plots[data_class] = data_class.monte_carlo(steps, n_simulations, show)
+
+        return plots
+
+    def report(self, output_filename: str, steps: int = 100, simulations: int = 200):
         """
         Generate a wallet report, displaying the statistics for each queried symbol
         :param output_filename: Output file's name
@@ -45,6 +60,7 @@ class Wallet:
         """
         template_content = ""
         plots = self.__plots_report__()
+        monte_carlo_plots = self.monte_carlo(steps, simulations)
         wallet_performance_plot = self.__plot_wallet_performance__()
         with resources.files("src.resources").joinpath(Wallet.TEMPLATE_FILENAME).open("r", encoding="utf-8") as f:
             template_content = f.read()
@@ -54,6 +70,7 @@ class Wallet:
             DataClass=DataClass,
             date=date.today().isoformat(),
             data_classes=self.data_classes,
+            monte_carlo_plots=monte_carlo_plots,
             wallet_performance_plot=wallet_performance_plot
         )
 
