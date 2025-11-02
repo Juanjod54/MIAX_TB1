@@ -1,6 +1,14 @@
 # MIAX Tarea Bloque 1
 #### Juan José Daza Linares
 
+## Demo
+
+[Haz click aquí para acceder al live demo](https://miax-tb1.onrender.com)
+
+![Demo](resources/demo.png)
+
+**Nota**: Al tratarse del plan gratuito, tarda un par de minutos en estar disponible.
+
 ## Introducción
 
 Este proyecto contiene las herramientas necesarias para obtener y mostrar los precios históricos de diferentes APIs de datos de mercados, 
@@ -10,7 +18,7 @@ Adicionalmente, es posible obtener un reporte markdown con diferente informació
 ![Monte Carlo](resources/montecarlo.png)
 
 ##### Comparación de rendimientos de una cartera
-![Monte Carlo](resources/performance.png)
+![Performance](resources/performance.png)
 
 ##### Evolución del histórico de precios
 ![nvda](resources/nvda.png)
@@ -30,10 +38,6 @@ Un elemento dinamico que permita añadir varios de estos componentes, como un gr
 **Nota**: *Como posible mejora, los datos disponibles en el formulario podrían obtenerse dinámicamente desde el servidor, por el momento, se encuentran incrustados en el código HTML*.
 
 La implementación del sistema (clases, estructura y lógica funcional) está desarrollada *"manualmente"*, séase, cualquier error en el código, es completamente culpa mía ...
-
-## Demo
-
-Pagina web donde este alojado
 
 ## Ejecución local
 
