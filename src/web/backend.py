@@ -1,8 +1,9 @@
 import os
 import uuid
+from io import BytesIO
 
 from fastapi import FastAPI, BackgroundTasks
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 
 from src.consumer.alpha_vantage_consumer import AlphaVantageConsumer
 from src.consumer.consumer import Consumer
@@ -60,9 +61,10 @@ async def consume(data: dict, background_tasks: BackgroundTasks):
 
     wallet = Wallet()
     wallet.add_data_classes(dataclasses)
-    random_report_name = f'output/{str(uuid.uuid4())}.md'
-    wallet.report(output_filename=random_report_name, steps=100, simulations=100)
+    report = wallet.report(steps=100, simulations=100)
 
-    background_tasks.add_task(os.remove, random_report_name)
-
-    return FileResponse(random_report_name, media_type="text/markdown")
+    return StreamingResponse(
+        BytesIO(report),
+        media_type="text/markdown",
+        headers={"Content-Disposition": "attachment; filename=report.md"}
+    )
