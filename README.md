@@ -7,7 +7,7 @@
 
 ![Demo](resources/demo.png)
 
-**Nota**: Al tratarse del plan gratuito, tarda un par de minutos en estar disponible.
+**Nota**: Al tratarse del plan gratuito, tarda un par de minutos en estar disponible y el rendimiento no es óptimo.
 
 ## Introducción
 
