@@ -39,6 +39,9 @@ class AlphaVantageConsumer(Consumer):
         FIFTEEN_MIN = "15min"
         THIRTY_MIN = "30min"
         SIXTY_MIN = "60min"
+        ONE_DAY = "DAILY"
+        ONE_WEEK = "WEEKLY"
+        ONE_MONTH = "MONTHLY"
 
     def __init__(self, api_key, params=None, method: Consumer.methods = Consumer.methods.GET):
         super().__init__(params, method)
