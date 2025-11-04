@@ -1,258 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MIAX - Tarea Bloque 1</title>
-  <style>
-    :root {
-      --primary: #2563eb;
-      --primary-dark: #1e40af;
-      --success: #16a34a;
-      --danger: #dc2626;
-      --gray-light: #f9fafb;
-      --gray: #d1d5db;
-      --gray-mid: #9ca3af;
-      --gray-dark: #374151;
-      --radius: 8px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIAX - Consumables Form</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --gray-light: #f9fafb;
+            --gray: #d1d5db;
+            --gray-dark: #374151;
+            --radius: 8px;
+        }
 
-    * {
-      box-sizing: border-box;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: system-ui, sans-serif;
-      background: var(--gray-light);
-      margin: 0;
-      padding: 2rem;
-      display: flex;
-      justify-content: center;
-    }
+        body {
+            font-family: system-ui, sans-serif;
+            background: var(--gray-light);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
 
-    .container {
-      background: white;
-      border-radius: 14px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-      padding: 2rem;
-      width: 100%;
-      max-width: 800px;
-    }
+        .container {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 800px;
+        }
 
-    h1 {
-      text-align: center;
-      color: var(--gray-dark);
-      font-size: 1.9rem;
-      margin-bottom: 2rem;
-    }
+        h1 {
+            text-align: center;
+            color: var(--gray-dark);
+            font-size: 1.9rem;
+            margin-bottom: 2rem;
+        }
 
-    .consumable {
-      background: var(--gray-light);
-      border: 1px solid var(--gray);
-      border-radius: 10px;
-      padding: 1.2rem 1.5rem;
-      margin-bottom: 1.2rem;
-      transition: box-shadow 0.2s, transform 0.1s;
-    }
+        .consumable {
+            background: var(--gray-light);
+            border: 1px solid var(--gray);
+            border-radius: 10px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.2rem;
+            transition: box-shadow 0.2s, transform 0.1s;
+        }
 
-    .consumable:hover {
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      transform: translateY(-2px);
-    }
+        .consumable:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
 
-    label {
-      display: block;
-      font-weight: 600;
-      margin-top: 0.8rem;
-      margin-bottom: 0.2rem;
-      color: var(--gray-dark);
-      font-size: 0.95rem;
-    }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-top: 0.8rem;
+            margin-bottom: 0.2rem;
+            color: var(--gray-dark);
+            font-size: 0.95rem;
+        }
 
-    input, select {
-      width: 100%;
-      padding: 0.6rem 1rem;
-      border: 1px solid var(--gray);
-      border-radius: var(--radius);
-      font-size: 1rem;
-      background-color: #fff;
-      color: var(--gray-dark);
-      transition: border 0.2s, box-shadow 0.2s;
-      appearance: none;
-      background-image: none;
-    }
+        input, select {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--gray);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background-color: #fff;
+            color: var(--gray-dark);
+            transition: border 0.2s, box-shadow 0.2s;
+        }
 
-    input:focus, select:focus {
-      border-color: var(--primary);
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.25);
-    }
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+        }
 
-    /* Modern custom dropdown arrow */
-    select {
-      background: #fff url('data:image/svg+xml;utf8,<svg fill="%239ca3af" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.25a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"/></svg>') no-repeat right 0.9rem center;
-      background-size: 1rem;
-      padding-right: 2.2rem;
-    }
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.8rem;
+            align-items: center;
+        }
 
-    .buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 1.8rem;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-    }
+        .buttons label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            position: relative;
+        }
 
-    button {
-      cursor: pointer;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      padding: 0.7rem 1.3rem;
-      font-size: 1rem;
-      transition: background 0.2s, transform 0.1s;
-    }
+        .buttons label[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 0;
+            background: var(--gray-dark);
+            color: white;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            z-index: 10;
+        }
 
-    button:active {
-      transform: scale(0.98);
-    }
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 0.7rem 1.3rem;
+            font-size: 1rem;
+            transition: background 0.2s, transform 0.1s;
+        }
 
-    .btn-add {
-      background: var(--primary);
-      color: white;
-    }
-    .btn-add:hover {
-      background: var(--primary-dark);
-    }
+        button:active {
+            transform: scale(0.98);
+        }
 
-    .btn-remove {
-      background: var(--danger);
-      color: white;
-      margin-top: 0.9rem;
-    }
-    .btn-remove:hover {
-      background: #b91c1c;
-    }
+        .btn-add {
+            background: var(--primary);
+            color: white;
+        }
 
-    .btn-submit {
-      background: var(--success);
-      color: white;
-    }
-    .btn-submit:hover {
-      background: #15803d;
-    }
+        .btn-add:hover {
+            background: var(--primary-dark);
+        }
 
-    #status {
-      text-align: center;
-      margin-top: 1.2rem;
-      font-weight: 600;
-      color: var(--gray-dark);
-    }
-  </style>
+        .btn-remove {
+            background: var(--danger);
+            color: white;
+            margin-top: 0.9rem;
+        }
+
+        .btn-remove:hover {
+            background: #b91c1c;
+        }
+
+        .btn-submit {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background: #15803d;
+        }
+
+        #status {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
+<div class="container">
     <h1>Consumables Form</h1>
 
     <form id="form">
-      <div id="consumable-container"></div>
+        <div id="consumable-container"></div>
 
-      <div class="buttons">
-        <button type="button" class="btn-add" onclick="addConsumable()">+ Add Consumable</button>
-        <button type="submit" class="btn-submit">Submit</button>
-      </div>
+        <div class="buttons">
+            <div>
+                <button type="button" class="btn-add" onclick="addConsumable()">Add new</button>
+                <button type="submit" class="btn-submit">Generate Wallet Report</button>
+            </div>
+            <label>
+                <input type="checkbox" id="asyncRequests" checked>
+                Async Requests
+            </label>
+
+            <label data-tooltip="When enabled, all selected sources will be used for each symbol.">
+                <input type="checkbox" id="promiscuousMode">
+                Promiscuous Mode
+            </label>
+        </div>
     </form>
 
     <p id="status"></p>
-  </div>
+</div>
 
-  <script>
+<script>
     function createConsumable() {
-      const div = document.createElement('div');
-      div.className = 'consumable';
-
-      div.innerHTML = `
+        const div = document.createElement('div');
+        div.className = 'consumable';
+        div.innerHTML = `
         <label>Symbol / Product / Index</label>
-        <input type="text" name="symbol[]" placeholder="e.g., AAPL, BTC/USD, SP500" required>
+        <input type="text" name="symbol[]" placeholder="e.g., AAPL, IBM, IBEX" required>
 
         <label>Interval / Frequency</label>
-        <select name="interval[]">
-          <option value="1m">1 minute</option>
-          <option value="5m">5 minutes</option>
-          <option value="1h">1 hour</option>
-          <option value="1d">1 day</option>
+        <select name="interval[]" required>
+            <option value="1">1 minute</option>
+            <option value="2">5 minutes</option>
+            <option value="3">15 minutes</option>
+            <option value="4">30 minutes</option>
+            <option value="5">60 minutes</option>
+            <option value="6">90 minutes</option>
+            <option value="7">1 day</option>
+            <option value="8">5 days</option>
+            <option value="9">1 week</option>
+            <option value="10">1 month</option>
+            <option value="11">3 months</option>
         </select>
 
         <label>Period</label>
-        <select name="period[]">
-          <option value="1M">1 month</option>
-          <option value="3M">3 months</option>
-          <option value="6M">6 months</option>
-          <option value="1Y">1 year</option>
+        <select name="period[]" required>
+            <option value="1">Intraday</option>
+            <option value="2">1 day</option>
+            <option value="3">2 days</option>
+            <option value="4">1 week</option>
+            <option value="5">1 month</option>
+            <option value="6">3 months</option>
+            <option value="7">6 months</option>
+            <option value="8">1 year</option>
         </select>
 
         <label>Source</label>
-        <select name="source[]">
-          <option value="yahoo">Yahoo Finance</option>
-          <option value="alpha">Alpha Vantage</option>
-          <option value="binance">Binance</option>
-          <option value="other">Other</option>
+        <select name="source[]" required onchange="toggleApiKey(this)">
+            <option value="yahoo">Yahoo Finance</option>
+            <option value="alpha">Alpha Vantage</option>
+        </select>
+
+        <div class="api-key" style="display:none;">
+            <label>API Key (required for Alpha)</label>
+            <input type="text" name="apikey[]" placeholder="Enter Alpha Vantage API key">
+        </div>
+
+        <label>Data Format</label>
+        <select name="dataformat[]" required>
+            <option value="json">json</option>
+            <option value="csv">csv</option>
         </select>
 
         <button type="button" class="btn-remove" onclick="this.parentElement.remove()">Remove</button>
-      `;
-      return div;
+    `;
+        return div;
+    }
+
+    function toggleApiKey(select) {
+        const apiDiv = select.parentElement.querySelector('.api-key');
+        if (select.value === 'alpha') {
+            apiDiv.style.display = 'block';
+            apiDiv.querySelector('input').required = true;
+        } else {
+            apiDiv.style.display = 'none';
+            apiDiv.querySelector('input').required = false;
+        }
     }
 
     function addConsumable() {
-      document.getElementById('consumable-container').appendChild(createConsumable());
+        document.getElementById('consumable-container').appendChild(createConsumable());
     }
 
     async function sendData(data) {
-      const status = document.getElementById('status');
-      status.textContent = 'Sending data...';
+        const status = document.getElementById('status');
+        status.textContent = 'Sending data...';
+        try {
+            const response = await fetch('/api/data', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) throw new Error('Server error');
+            const result = await response.text();
+            const blob = new Blob([result], {type: 'text/html'});
+            const url = URL.createObjectURL(blob);
 
-      try {
-        const response = await fetch('/api/data', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ consumables: data })
-        });
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'report.md'; // nombre sugerido
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
 
-        if (!response.ok) throw new Error('Server error');
-        const result = await response.json();
-
-        status.textContent = `✅ Data sent successfully (${result.received} items)`;
-        console.log('Server response:', result);
-      } catch (err) {
-        status.textContent = '❌ Failed to send data';
-        console.error(err);
-      }
+            status.textContent = `Report generated`;
+        } catch (err) {
+            status.textContent = `Failed to send data: ${err}`;
+            console.error(err);
+        }
     }
 
     document.getElementById('form').addEventListener('submit', e => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const consumables = [];
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const consumables = [];
+        const symbols = formData.getAll('symbol[]');
+        const intervals = formData.getAll('interval[]');
+        const periods = formData.getAll('period[]');
+        const sources = formData.getAll('source[]');
+        const apikeys = formData.getAll('apikey[]');
+        const dataformats = formData.getAll('dataformat[]');
 
-      const symbols = formData.getAll('symbol[]');
-      const intervals = formData.getAll('interval[]');
-      const periods = formData.getAll('period[]');
-      const sources = formData.getAll('source[]');
+        for (let i = 0; i < symbols.length; i++) {
+            consumables.push({
+                symbol: symbols[i],
+                interval: Number(intervals[i]),
+                period: Number(periods[i]),
+                source: sources[i],
+                api_key: sources[i] === 'alpha' ? apikeys[i] : null,
+                data_format: dataformats[i]
+            });
+        }
 
-      for (let i = 0; i < symbols.length; i++) {
-        consumables.push({
-          symbol: symbols[i],
-          interval: intervals[i],
-          period: periods[i],
-          source: sources[i]
-        });
-      }
+        const payload = {
+            async: document.getElementById('asyncRequests').checked,
+            promiscuous: document.getElementById('promiscuousMode').checked,
+            consumables
+        };
 
-      sendData(consumables);
+        sendData(payload);
     });
 
-    addConsumable(); // Add first consumable
-  </script>
+    addConsumable();
+</script>
 </body>
 </html>

@@ -1,18 +1,19 @@
-import io
-import copy
-import math
 import base64
-import random
-import datetime
+import copy
+import io
+import math
+from enum import Enum
 
+import matplotlib
 import numpy as np
 import pandas as pd
-from enum import Enum
-from pandas import DataFrame
-import matplotlib.pyplot as plt
+
+from src.domain.consumable import Consumable
 from src.domain.plot import Plot
 from src.domain.price import Price
-from src.domain.consumable import Consumable
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 
 class DataClass:

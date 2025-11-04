@@ -8,4 +8,5 @@ consumer = YahooConsumer()
 ################################################################################################################
 # Test API consumer with demo API URL
 consumable_1 = Consumable("IBM", Consumable.period.INTRADAY, Consumable.interval.FIVE_MIN)
-result_1 = consumer.consume([consumable_1])
+consumable_2 = Consumable("AAPL", Consumable.period.ONE_WEEK, Consumable.interval.FIVE_MIN)
+result_1 = consumer.consume([consumable_1, consumable_2], async_request=True)
