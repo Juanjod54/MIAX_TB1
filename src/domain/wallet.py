@@ -1,3 +1,4 @@
+import base64
 from datetime import date
 from jinja2 import Template
 from importlib import resources

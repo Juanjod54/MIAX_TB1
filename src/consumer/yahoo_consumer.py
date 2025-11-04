@@ -12,7 +12,7 @@ from src.util.util import Util
 class YahooConsumer(Consumer):
     class __period__(Enum):
         INTRADAY = "1d"
-        DAILY_ADJUSTED = "1d"
+        DAILY = "1d"
         TWO_DAYS = "2d"
         ONE_WEEK = "1wk"
         ONE_MONTH = "1mo"
@@ -78,7 +78,8 @@ class YahooConsumer(Consumer):
         interval = YahooConsumer.__interval__[consumable.interval.name]
 
         prices = []
-        data = yf.download(ticker, period=period.value, interval=interval.value, progress=False, auto_adjust=False)
+        # Threads = False -> Threads are already controlled from Consumer.py
+        data = yf.download(ticker, period=period.value, interval=interval.value, progress=False, auto_adjust=False, threads=False)
         # Normalize column names
         data.columns = [col[0].lower().replace(' ', '_') for col in data.columns.to_flat_index()]
         # May seem redundant, but standardizes data:

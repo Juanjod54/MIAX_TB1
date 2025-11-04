@@ -4,7 +4,7 @@ from requests import Response
 from abc import ABC, abstractmethod
 from src.domain.data_class import DataClass
 from src.domain.consumable import Consumable
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor as Executor, as_completed
 
 
 class Consumer(ABC):
@@ -76,7 +76,7 @@ class Consumer(ABC):
         """
         dataclasses = []
 
-        with ThreadPoolExecutor() as executor:
+        with Executor() as executor:
             futures = {executor.submit(consumer.consume, consumables, True): consumer for consumer in consumers}
             for future in as_completed(futures):
                 consumer_future = futures[future]
@@ -102,7 +102,7 @@ class Consumer(ABC):
 
         if async_request:
 
-            with ThreadPoolExecutor() as executor:
+            with Executor() as executor:
                 futures = {executor.submit(self.__consume__,  ##
                                            consumable, self.params, self.method): consumable for consumable in
                            consumables}
