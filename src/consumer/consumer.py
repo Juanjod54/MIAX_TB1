@@ -1,10 +1,12 @@
-import requests
-from enum import Enum
-from requests import Response
 from abc import ABC, abstractmethod
-from src.domain.data_class import DataClass
+from concurrent.futures import ThreadPoolExecutor as Executor, as_completed
+from enum import Enum
+
+import requests
+from requests import Response
+
 from src.domain.consumable import Consumable
-from concurrent.futures import ProcessPoolExecutor as Executor, as_completed
+from src.domain.data_class import DataClass
 
 
 class Consumer(ABC):
@@ -103,15 +105,7 @@ class Consumer(ABC):
         if async_request:
 
             with Executor() as executor:
-                futures = {executor.submit(self.__consume__,  ##
-                                           consumable, self.params, self.method): consumable for consumable in
-                           consumables}
-                for future in as_completed(futures):
-                    consumable = futures[future]
-                    try:
-                        dataclasses.append(future.result())
-                    except Exception as e:
-                        print(f"{self} - There was an error while fetching consumable {consumable}: {e}")
+                dataclasses = executor.map(lambda consumable: self.__consume__(consumable, self.params, self.method), consumables)
         else:
             for consumable in consumables:
                 try:
