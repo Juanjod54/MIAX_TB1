@@ -1,10 +1,12 @@
 from enum import Enum
+
 import yfinance as yf
 from requests import Response
-from src.domain.price import Price
+
 from src.consumer.consumer import Consumer
-from src.domain.data_class import DataClass
 from src.domain.consumable import Consumable
+from src.domain.data_class import DataClass
+from src.domain.price import Price
 from src.exceptions.option_not_available_exception import OptionNotAvailableException
 from src.util.util import Util
 
@@ -78,10 +80,11 @@ class YahooConsumer(Consumer):
         interval = YahooConsumer.__interval__[consumable.interval.name]
 
         prices = []
-        # Threads = False -> Threads are already controlled from Consumer.py
-        data = yf.download(ticker, period=period.value, interval=interval.value, progress=False, auto_adjust=False, threads=False)
-        # Normalize column names
-        data.columns = [col[0].lower().replace(' ', '_') for col in data.columns.to_flat_index()]
+        # yf.download SHARES a Dataframe between different calls. It is surprisingly annoying ...
+        # using yf.Ticker(ticker)
+        data = yf.Ticker(ticker).history(period=period.value, interval=interval.value,
+                                         auto_adjust=False)
+        data.columns = [col.lower().replace(' ', '_') for col in data.columns]
         # May seem redundant, but standardizes data:
         for row in data.itertuples(name='Price'):
             close_adj = row.adj_close if 'adj_close' in data.columns else row.close
@@ -90,5 +93,3 @@ class YahooConsumer(Consumer):
 
         data_class.add_prices(prices)
         return data_class
-
-
