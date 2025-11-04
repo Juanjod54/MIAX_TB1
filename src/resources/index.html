@@ -274,8 +274,7 @@
                 body: JSON.stringify(data)
             });
             if (!response.ok) throw new Error('Server error');
-            const result = await response.text();
-            const blob = new Blob([result], {type: 'text/html'});
+            const blob = await response.blob();
             const url = URL.createObjectURL(blob);
 
             const a = document.createElement('a');

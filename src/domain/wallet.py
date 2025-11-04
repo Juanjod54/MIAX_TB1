@@ -1,11 +1,10 @@
-import base64
 from datetime import date
-from jinja2 import Template
 from importlib import resources
+
+from jinja2 import Template
 
 from src.domain.consumable import Consumable
 from src.domain.data_class import DataClass
-from src.domain.plot import Plot
 
 
 class Wallet:
@@ -41,7 +40,7 @@ class Wallet:
 
         return plots
 
-    def monte_carlo(self, steps: int, n_simulations: int, consumable: Consumable=None, show: bool = False):
+    def monte_carlo(self, steps: int, n_simulations: int, consumable: Consumable = None, show: bool = False):
         plots = {}
         if consumable is None:
             for data_class in self.data_classes:
@@ -53,7 +52,7 @@ class Wallet:
 
         return plots
 
-    def report(self, output_filename: str, steps: int = 100, simulations: int = 200):
+    def report(self, output_filename: str = None, steps: int = 100, simulations: int = 200):
         """
         Generate a wallet report, displaying the statistics for each queried symbol
         :param output_filename: Output file's name
@@ -75,5 +74,8 @@ class Wallet:
             wallet_performance_plot=wallet_performance_plot
         )
 
-        with open(output_filename, 'w', encoding='utf-8') as f:
-            f.write(rendered_content)
+        if output_filename is not None:
+            with open(output_filename, 'w', encoding='utf-8') as f:
+                f.write(rendered_content)
+
+        return rendered_content.encode("utf-8")
