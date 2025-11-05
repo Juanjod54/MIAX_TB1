@@ -3,7 +3,7 @@
 
 ## Demo
 
-[Haz click aquí para acceder al live demo](https://miax-tb1.onrender.com)
+[Haz click aquí para acceder al live demo](https://miax-tb-1.vercel.app)
 
 ![Demo](resources/demo.png)
 
@@ -11,17 +11,24 @@
 
 ## Introducción
 
-Este proyecto contiene las herramientas necesarias para obtener y mostrar los precios históricos de diferentes APIs de datos de mercados, 
-Adicionalmente, es posible obtener un reporte markdown con diferente información relevante de los datos consultados, como por ejemplo:
+Este proyecto contiene las herramientas necesarias para obtener y mostrar los precios históricos de diferentes APIs de datos de mercados, Una vez introducidos los datos se genera un reporte markdown con diferente información relevante de los datos consultados, como:
 
-##### Simulación de Monte Carlo sobre un activo
-![Monte Carlo](resources/montecarlo.png)
+* Media de precios en el periodo consultado
+* Mínimos y máximos
+* Volatilidad
+* Gráficos
 
-##### Comparación de rendimientos de una cartera
-![Performance](resources/performance.png)
+    * **Simulación de Monte Carlo sobre un activo**
+    
+    ![Monte Carlo](resources/montecarlo.png)
 
-##### Evolución del histórico de precios
-![nvda](resources/nvda.png)
+    * **Comparación de rendimientos de una cartera**
+    
+    ![Performance](resources/performance.png)
+
+    * **Evolución del histórico de precios**
+    
+    ![nvda](resources/nvda.png)
 
 El desarrollo de este proyecto se ha llevado a cabo siguiendo una estructura más cercana a un proyecto en Java, organizada en módulos y clases jerarquizadas con el objetivo de garantizar la claridad, mantenibilidad y coherencia del código.
 
@@ -39,11 +46,20 @@ Un elemento dinamico que permita añadir varios de estos componentes, como un gr
 
 La implementación del sistema (clases, estructura y lógica funcional) está desarrollada *"manualmente"*, séase, cualquier error en el código, es completamente culpa mía ...
 
+
+
 ## Ejecución local
+
+Para facilitar la ejecución de este código, se proporciona un fichero *sh* que:
+1. Inicia el entorno virtual
+2. Instala los requerimientos listados en *requirements.txt*
+3. Arranca el servidor, con la ayuda de FastAPI
 
 ### Dependencias
 
-Las dependencias utilizadas se encuentran enumeradas en el archivo *requirements.txt*. Para utilizarlo TODO venv  TODO requirements TODO nose
+Las dependencias utilizadas se encuentran enumeradas en el archivo *requirements.txt*. Es posible instalarlas manualmente o cargar el fichero mediante 
+
+`pip install -r requirements.txt`
 
 ## Descripción del código
 
