@@ -1,5 +1,4 @@
 import os
-import uuid
 from io import BytesIO
 
 from fastapi import FastAPI, BackgroundTasks
@@ -14,7 +13,7 @@ from src.domain.wallet import Wallet
 app = FastAPI()
 
 
-def get_consumer(consumer: str, api_key: None) -> Consumer | None:
+def get_consumer(consumer: str, api_key: None) -> Consumer:
     if consumer == 'alpha':
         return AlphaVantageConsumer(api_key)
     elif consumer == 'yahoo':

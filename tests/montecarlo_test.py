@@ -1,5 +1,5 @@
-from src.domain.consumable import Consumable
 from src.consumer.yahoo_consumer import YahooConsumer
+from src.domain.consumable import Consumable
 from src.domain.wallet import Wallet
 
 consumer = YahooConsumer()

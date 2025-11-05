@@ -139,7 +139,7 @@ class DataClass:
     def __clean_prices__(self):
         self.prices.dropna(inplace=True)
 
-    def create_plot(self, field: Field | None, show: bool = False) -> Plot:
+    def create_plot(self, field: Field, show: bool = False) -> Plot:
         if field is None:
             title = f"{self.name} Prices Evolution"
             fields = [DataClass.Field.OPEN, DataClass.Field.CLOSE, DataClass.Field.HIGH, DataClass.Field.LOW]

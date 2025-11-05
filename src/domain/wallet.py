@@ -1,5 +1,4 @@
 from datetime import date
-from importlib import resources
 
 from jinja2 import Template
 
@@ -62,7 +61,7 @@ class Wallet:
         plots = self.__plots_report__()
         monte_carlo_plots = self.monte_carlo(steps, simulations)
         wallet_performance_plot = self.__plot_wallet_performance__()
-        with resources.files("src.resources").joinpath(Wallet.TEMPLATE_FILENAME).open("r", encoding="utf-8") as f:
+        with open(f"src/resources/{Wallet.TEMPLATE_FILENAME}", "r", encoding="utf-8") as f:
             template_content = f.read()
 
         rendered_content = Template(template_content).render(

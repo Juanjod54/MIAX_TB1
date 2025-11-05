@@ -1,10 +1,9 @@
-from src.consumer.alpha_vantage_consumer import AlphaVantageConsumer
 from src.consumer.yahoo_consumer import YahooConsumer
-from src.domain.wallet import Wallet
 from src.domain.consumable import Consumable
+from src.domain.wallet import Wallet
 
 wallet = Wallet()
-#consumer = AlphaVantageConsumer('TTFIK3GA2M9UCDXS')
+# consumer = AlphaVantageConsumer('TTFIK3GA2M9UCDXS')
 consumer = YahooConsumer()
 consumable_1 = Consumable("IBM", Consumable.period.ONE_YEAR, Consumable.interval.ONE_WEEK)
 consumable_2 = Consumable("IBEX", Consumable.period.ONE_YEAR, Consumable.interval.ONE_WEEK)
