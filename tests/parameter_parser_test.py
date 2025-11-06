@@ -1,6 +1,6 @@
 # Mini script to quickly test the ParameterParser class
-from src.parser.parameter_parser import ParameterParser
 from src.exceptions.missing_value_parser_exception import MissingValueParserException
+from src.parser.parameter_parser import ParameterParser
 
 parser = ParameterParser(['-o', '-i', '-u'])
 ################################################################################################################

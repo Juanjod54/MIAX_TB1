@@ -1,12 +1,14 @@
 from enum import Enum
+
 from requests import Response
+
+from src.consumer.consumer import Consumer
+from src.domain.consumable import Consumable
+from src.domain.data_class import DataClass
 from src.domain.price import Price
+from src.exceptions.incompatible_data_type_exception import IncompatibleDataTypeException
 from src.exceptions.option_not_available_exception import OptionNotAvailableException
 from src.util.util import Util
-from src.consumer.consumer import Consumer
-from src.domain.data_class import DataClass
-from src.domain.consumable import Consumable
-from src.exceptions.incompatible_data_type_exception import IncompatibleDataTypeException
 
 
 class AlphaVantageConsumer(Consumer):

@@ -34,7 +34,7 @@ class Consumer(ABC):
         pass
 
     @staticmethod
-    def __do_request__(url: str, params: dict, method: methods) -> Response | None:
+    def __do_request__(url: str, params: dict, method: methods) -> Response:
         """
         Abstract method to do the actual request
         :param url: The API url

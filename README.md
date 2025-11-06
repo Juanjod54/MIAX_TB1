@@ -3,7 +3,7 @@
 
 ## Demo
 
-[Haz click aquí para acceder al live demo](https://miax-tb1.onrender.com)
+[Haz click aquí para acceder al live demo](https://miax-tb-1.vercel.app)
 
 ![Demo](resources/demo.png)
 
@@ -11,17 +11,24 @@
 
 ## Introducción
 
-Este proyecto contiene las herramientas necesarias para obtener y mostrar los precios históricos de diferentes APIs de datos de mercados, 
-Adicionalmente, es posible obtener un reporte markdown con diferente información relevante de los datos consultados, como por ejemplo:
+Este proyecto contiene las herramientas necesarias para obtener y mostrar los precios históricos de diferentes APIs de datos de mercados, Una vez introducidos los datos se genera un reporte markdown con diferente información relevante de los datos consultados, como:
 
-##### Simulación de Monte Carlo sobre un activo
-![Monte Carlo](resources/montecarlo.png)
+* Media de precios en el periodo consultado
+* Mínimos y máximos
+* Volatilidad
+* Gráficos
 
-##### Comparación de rendimientos de una cartera
-![Performance](resources/performance.png)
+    * **Simulación de Monte Carlo sobre un activo**
+    
+    ![Monte Carlo](resources/montecarlo.png)
 
-##### Evolución del histórico de precios
-![nvda](resources/nvda.png)
+    * **Comparación de rendimientos de una cartera**
+    
+    ![Performance](resources/performance.png)
+
+    * **Evolución del histórico de precios**
+    
+    ![nvda](resources/nvda.png)
 
 El desarrollo de este proyecto se ha llevado a cabo siguiendo una estructura más cercana a un proyecto en Java, organizada en módulos y clases jerarquizadas con el objetivo de garantizar la claridad, mantenibilidad y coherencia del código.
 
@@ -41,11 +48,42 @@ La implementación del sistema (clases, estructura y lógica funcional) está de
 
 ## Ejecución local
 
+Para facilitar la ejecución de este código, se proporciona el fichero *run.sh* que puede lanzarse con:
+
+`sh run.sh`
+
+Este fichero:
+
+1. Crea un entorno virtual *.venv* si no existe.
+2. Inicia el entorno virtual *.venv*
+3. Instala los requerimientos listados en *requirements.txt*
+4. Arranca el servidor, con la ayuda de FastAPI
+
 ### Dependencias
 
-Las dependencias utilizadas se encuentran enumeradas en el archivo *requirements.txt*. Para utilizarlo TODO venv  TODO requirements TODO nose
+Las dependencias utilizadas se encuentran enumeradas en el archivo *requirements.txt*. Es posible instalarlas manualmente o cargar el fichero mediante 
+
+`pip install -r requirements.txt`
 
 ## Descripción del código
+
+### Diagrama de clases
+
+![Diagrama Clases](resources/diagrama_clases.drawio.png)
+
+Este proyecto sigue una estructura basada en módulos. 
+
+Dentro de la carpeta src, encontramos:
+* Objetos de dominio (domain)
+* Consumers, que extraen los datos (consumers)
+* Excepciones personalizadas (exceptions)
+* Utilidades (util)
+* Recursos, htmls y templates (resources)
+* Un módulo de procesado de parámetros, **en desuso** (parser)
+
+Dentro de la carpeta test se encuentran los component test que se han realizado para comprobar la funcionalidad de cada componente.
+
+Adicionalmente, en la carpeta raíz se encuentra el fichero *server.py*, ya que, el servidor escogido para desplegar la aplicación de prueba, requiere este fichero en dicha ubicación.
 
 ## Notas Adicionales
 
@@ -75,3 +113,7 @@ Por otro lado, aunque la entrada del usuario esté contemplada, si esta no está
 > Añade métodos a las dataclasses de series de precios que incorporen información estadística relevante. Haz que los métodos para la información más básica (media y desviación típica) se apliquen automáticamente.
 
 Dada la estructura desarrollada para alojar el histórico de precios (*Pandas DataFrame*), los métodos de información estadística no se aplican automáticamente desde la solución desarrollada en sí, sino que se delega en la propia librería de *Pandas* para obtener dichas medidas mediante los métodos std, min, max, mean, etc.
+
+> Acerca de *yfinance*
+
+La librería no oficial de yfinance ha complicado bastante el desarrollo de esta práctica, ya que no se explica en detalle cómo funciona internamente, por lo que, para la estructura diseñada, ha supuesto un problema de concurrencia. Dado que yfinance internamente comparte un mismo DataFrame para todas las descargas que realiza, causaba que los datos de precios se sobreescribiesen. **Finalmente esto se ha solventado usando *yf.Ticker.history*, en lugar de *yf.download*.**
